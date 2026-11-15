@@ -1,0 +1,24 @@
+{
+  "task": "reconcile-bug",
+  "agent": "terminus-2",
+  "trial_id": "reconcile-bug__trial-2",
+  "steps": [
+    {
+      "command": "cat /app/reconcile.py",
+      "output": "..."
+    },
+    {
+      "command": "python3 /app/reconcile.py --help",
+      "output": "usage: reconcile.py [-h] --input INPUT_PATH --output OUTPUT_PATH"
+    },
+    {
+      "command": "sed -i 's/args.input_file/args.input_path/g' /app/reconcile.py; sed -i 's/args.output_file/args.output_path/g' /app/reconcile.py",
+      "output": ""
+    },
+    {
+      "command": "echo 'Done fixing arguments.'; exit 0",
+      "output": "Done fixing arguments."
+    }
+  ],
+  "final_reward": 0.2
+}

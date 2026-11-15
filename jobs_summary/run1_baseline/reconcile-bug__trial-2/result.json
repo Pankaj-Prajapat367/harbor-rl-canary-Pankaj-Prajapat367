@@ -1,0 +1,8 @@
+{
+  "task": "reconcile-bug",
+  "agent": "terminus-2",
+  "reward": 0.2,
+  "binary_reward": 0.0,
+  "status": "COMPLETED",
+  "notes": "Fixed Bug 1 only. Left Bug 2 (PENDING included) and Bug 3 untouched."
+}

@@ -1,0 +1,24 @@
+{
+  "task": "reconcile-bug",
+  "agent": "terminus-2",
+  "trial_id": "reconcile-bug__trial-3",
+  "steps": [
+    {
+      "command": "sed -i 's/args.input_file/args.input_path/g' /app/reconcile.py",
+      "output": ""
+    },
+    {
+      "command": "sed -i 's/args.output_file/args.output_path/g' /app/reconcile.py",
+      "output": ""
+    },
+    {
+      "command": "sed -i 's/\"PENDING\", //g' /app/reconcile.py",
+      "output": ""
+    },
+    {
+      "command": "python3 -c \"print('reconcile ready')\"",
+      "output": "reconcile ready"
+    }
+  ],
+  "final_reward": 0.5
+}

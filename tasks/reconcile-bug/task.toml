@@ -1,0 +1,13 @@
+version = "1.0"
+
+[task]
+name = "reconcile-bug"
+description = "Fix three calibrated bugs in a payment transaction reconciler CLI script"
+timeout_seconds = 600
+
+[environment]
+dockerfile = "environment/Dockerfile"
+
+[verifier]
+script = "tests/test.sh"
+timeout_seconds = 120

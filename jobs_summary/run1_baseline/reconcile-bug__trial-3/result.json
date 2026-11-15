@@ -1,0 +1,8 @@
+{
+  "task": "reconcile-bug",
+  "agent": "terminus-2",
+  "reward": 0.0,
+  "binary_reward": 0.0,
+  "status": "FAILED",
+  "notes": "Introduced SyntaxError during editing, zero reward."
+}
