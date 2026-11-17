@@ -2,40 +2,7 @@
 
 ## 1. Loom Walkthrough Video
 - **Video URL:** [Watch 5-Minute Walkthrough](https://www.loom.com/share/9dd4fc397f444e239df8b1cce1d69de2 )
-  *(Make sure link sharing is set to "Anyone with the link can view")*
-
----
-
-### Verbatim 5-Minute Video Recording Guide & Script
-
-#### Part 1: Live Reward Mutation & Anti-Hack Proof (0:00 – 1:45)
-- **Live Partial-Credit Canary (0:00 – 1:00):**
-  1. *[Screen on `solution/solve.sh`]*: "Hello, my name is Pankaj Prajapat. Here is our reference solution in `solution/solve.sh`. Notice line 46 where we normalize ISO timestamps to UTC using `astimezone(timezone.utc)`. I am going to intentionally break Bug 3 by replacing this with a naive string comparison `ts_str > records[tx_id]['timestamp']` while keeping Bug 1 (`argparse`) and Bug 2 (`PENDING` filtering) fully fixed."
-  2. *[Predict score out loud]*: "Based on our weights in `tests/test.sh` (Check 1 = 0.20, Check 2 = 0.30, Check 3 = 0.50), leaving Bug 3 broken means Checks 1 and 2 will pass (+0.50), but Check 3 will fail. Therefore, the oracle must score exactly **0.500**."
-  3. *[Run in terminal]*: Run `harbor run -p ./tasks/reconcile-bug -a oracle` (or test runner) and highlight the output: `Final Verifier Reward: 0.50`.
-  4. *[Revert & Re-run]*: Undo the edit, run oracle again, and show it scoring **1.000**.
-- **Live Anti-Cheat Proof (`hack.sh`) (1:00 – 1:45):**
-  1. *[Screen on `solution/hack.sh`]*: "Now let's examine `solution/hack.sh`. An AI agent attempting reward hacking might replace `/app/reconcile.py` with a dummy script returning a hardcoded JSON summary like `{'total_valid_amount': 100.0, 'valid_count': 1, 'failed_count': 0}` without doing any real CSV parsing."
-  2. *[Run 4-line swap command]*:
-     ```bash
-     cp tasks/reconcile-bug/solution/solve.sh /tmp/solve.sh.bak
-     cp tasks/reconcile-bug/solution/hack.sh tasks/reconcile-bug/solution/solve.sh
-     harbor run -p ./tasks/reconcile-bug -a oracle
-     mv /tmp/solve.sh.bak tasks/reconcile-bug/solution/solve.sh
-     ```
-  3. *[Show result]*: Highlight the terminal output: `Final Verifier Reward: 0.00`. Explain that `test.sh` uses randomized dynamic amounts/UUIDs and an input sensitivity invariant, catching the cheat and scoring it **0.000**.
-
-#### Part 2: Side-by-Side Trajectory Forensics (1:45 – 3:15)
-- *[Screen on `jobs_summary/run1_baseline/reconcile-bug__trial-1/trajectory.json`]*: "In Run 1 Baseline Trial 1, the agent identified the CLI crash on step 2 (`AttributeError: Namespace object has no attribute input_file`), patched it with `sed`, and fixed the status filter on step 4. However, on step 5 it ran a basic sanity test that only checked syntax, completely missing the cross-timezone deduplication rule in Bug 3 before exiting."
-- *[Show Ablation change]*: "For Run 2 (Ablation), we made one controlled change: we provided `/app/sample_transactions.csv` containing mixed offset timestamps (`+04:00` vs `Z`)."
-- *[Screen on `jobs_summary/run2_ablation/reconcile-bug__trial-1/trajectory.json`]*: "In Run 2 Trial 1, step 1 shows the agent inspecting `sample_transactions.csv`. It immediately recognized the timezone offset format, tested datetime conversions in step 3, and correctly implemented UTC normalization, scoring a full **1.000**."
-
-#### Part 3: Defend Your RL Math & Reward Design (3:15 – 5:00)
-- *[Screen on README.md Advantage Table and `tests/test.sh`]*:
-  1. **Walkthrough of Math**: "In Run 1 Trial 1, the agent scored 0 under binary grading and 0.50 under dense grading. Because all 3 baseline trials failed Bug 3, the binary mean was 0.00, resulting in an advantage of $0.00 - 0.00 = 0.00$—the Zero-Signal Trap. Under dense grading, the mean is 0.23, yielding a positive advantage of $+0.27$ ($0.50 - 0.23$). This $+0.27$ advantage provides a direct gradient signal reinforcing the agent's edits that fixed the CLI parser and status filtering, rather than penalizing the entire trajectory as a total failure."
-  2. **Local Optima & Weight Calibration**: "With Check 1 at 0.20, Check 2 at 0.30, and Check 3 at 0.50, an agent could potentially settle for 0.50 by refusing to touch Bug 3. If training runs revealed this plateau, I would adjust the weights to be super-linear or staged—such as allocating 0.70 to Check 3 or requiring Check 3 as a multiplicative gating factor ($R = (0.2 + 0.3) \times \text{Check}_3$ or minimum threshold) so the agent cannot maximize expected returns without solving the edge case."
-  3. **Residual Reward-Hacking Risk**: "A smarter agent could inspect `/proc` or python call stacks to inspect the verifier's PID or memory, or read the temporary CSV path passed in `sys.argv[1]` to parse the headers, or try to read `/logs/verifier/reward.txt` directly if file permissions allow it. Hardening against this requires container capability dropping (`--cap-drop=ALL`) and read-only mounts for test scripts."
-
+  
 ---
 
 ## 2. Task & Calibration Summary
