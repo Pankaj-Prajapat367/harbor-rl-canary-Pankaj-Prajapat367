@@ -1,7 +1,7 @@
 # Harbor RL Submission — Pankaj Prajapat (@Pankaj-Prajapat367)
 
 ## 1. Loom Walkthrough Video
-- **Video URL:** [Watch 5-Minute Walkthrough](https://www.loom.com/share/placeholder-harbor-rl-walkthrough)
+- **Video URL:** [Watch 5-Minute Walkthrough](https://www.loom.com/share/9dd4fc397f444e239df8b1cce1d69de2 )
   *(Make sure link sharing is set to "Anyone with the link can view")*
 
 ---
